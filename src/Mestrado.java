@@ -23,7 +23,6 @@ public class Mestrado {
     
     public static int numeroUsuarios = 0;
     
-    
     public static float calcularProdutoTrustComR(int linha, int coluna, DataModel dataModelTrust, SVDRecommender rec){
         float resultado = 0;
         numeroUsuarios = 0;
