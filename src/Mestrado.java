@@ -20,12 +20,6 @@ import org.apache.mahout.cf.taste.model.PreferenceArray;
 
 
 public class Mestrado {
-
-    
-    
-    
-    
-    
     
     public static int numeroUsuarios = 0;
     
