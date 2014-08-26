@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import org.apache.mahout.math.DenseMatrix;
@@ -116,6 +117,41 @@ public class MatrizClassica {
 	}
 	
 	
+	public static List<List<String>> getListaR(){
+		BufferedReader br;
+		
+		
+		List<List<String>> resultado = new ArrayList<List<String>>();
+		try {
+			
+		br = new BufferedReader(new FileReader("data/ratings_data_treinamento.txt"));
+		
+		String line = "";		
+		
+			while((line = br.readLine()) != null){
+				String[] values = line.split(" ");
+				List<String> lista = new ArrayList<String>();
+				lista.add(values[0]);
+				lista.add(values[1]);
+				lista.add(values[2]);
+				resultado.add(lista);
+			}
+			
+			br.close();
+			
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		return resultado;
+		
+	}
+	
+	
 	public static DenseMatrix getMatrizP(){
 		DenseMatrix mP = null;
 		
@@ -152,6 +188,87 @@ public class MatrizClassica {
 		return mQ;
 	}
 	
+	public static ArrayList<DenseMatrix> fatoracaoComLista(List<List<String>> mR, DenseMatrix mP, DenseMatrix mQ, int iteracoes, double txA, double txB){
+		DenseMatrix tranQ = (DenseMatrix) mQ.transpose();
+		DenseMatrix p = mP;
+		ArrayList<DenseMatrix> lista = new ArrayList<DenseMatrix>();
+		
+		for(int n = 0; n < iteracoes; n++){
+			
+			for(List<String> listaAtual : mR){
+				String linha = listaAtual.get(0);
+				String coluna = listaAtual.get(1);
+				String nota = listaAtual.get(2);
+				Integer i = Integer.parseInt(linha)-1;
+				Integer j = Integer.parseInt(coluna)-1;
+				Double nota1 = new Double(nota);			
+						
+				double erroij = nota1 - p.viewRow(i).dot(tranQ.viewColumn(j));
+					
+				Vector temp1p = tranQ.viewColumn(j).times(2*erroij);
+				
+				Vector temp2p = p.viewRow(i).times(txB);
+				
+				Vector temp3p = temp1p.minus(temp2p);
+				
+				p.assignRow(i, p.viewRow(i).plus(temp3p.times(txA)));
+				
+				Vector temp1q = p.viewRow(i).times(2*erroij);
+				
+				Vector temp2q = tranQ.viewColumn(j).times(txB);
+				
+				Vector temp3q = temp1q.minus(temp2q);
+				
+				tranQ.assignColumn(j, tranQ.viewColumn(j).plus(temp3q.times(txA)));
+									
+				
+			}
+			
+//			System.gc();
+//			//SparseMatrix mRpred = (SparseMatrix) p.times(tranQ);	
+//			double erroPredicao = 0;
+//			for(int i = 0; i < mR.numRows(); i++){
+//				for(int j =0; j < mR.numCols(); j++){
+//					if(mR.getQuick(i, j) > 0){
+//						erroPredicao = erroPredicao + Math.pow(mR.getQuick(i, j) - p.viewRow(i).dot(tranQ.viewColumn(j)),2);
+//						for(int k =0; k < p.numCols(); k++){
+//							erroPredicao = erroPredicao + (txB/2.0)*(Math.pow(p.get(i, k),2) + Math.pow(tranQ.get(k, j),2));
+//						}
+//					}
+//				}
+//			}
+//			System.out.println("Erro: "+erroPredicao);
+//			
+//			if(erroPredicao < 0.001){
+//				break;
+//			}	
+					
+		}
+		
+		System.gc();
+		//SparseMatrix mRpred = (SparseMatrix) p.times(tranQ);	
+		double erroPredicao = 0;
+		for(List<String> listaAtual : mR){
+			String linha = listaAtual.get(0);
+			String coluna = listaAtual.get(1);
+			String nota = listaAtual.get(2);
+			Integer i = Integer.parseInt(linha)-1;
+			Integer j = Integer.parseInt(linha)-1;
+			Double nota1 = new Double(nota);
+				erroPredicao = erroPredicao + Math.pow(nota1 - p.viewRow(i).dot(tranQ.viewColumn(j)),2);
+				for(int k =0; k < p.numCols(); k++){
+					erroPredicao = erroPredicao + (txB/2.0)*(Math.pow(p.get(i, k),2) + Math.pow(tranQ.get(k, j),2));
+				}			
+			
+		}
+		System.out.println("Erro: "+erroPredicao);
+		
+		lista.add(p);
+		lista.add(tranQ);
+		return lista;
+			
+	}
+	
 	
 	
 	public static ArrayList<DenseMatrix> fatoracao(SparseMatrix mR, DenseMatrix mP, DenseMatrix mQ, int iteracoes, double txA, double txB){
@@ -160,6 +277,9 @@ public class MatrizClassica {
 		ArrayList<DenseMatrix> lista = new ArrayList<DenseMatrix>();
 		
 		for(int n = 0; n < iteracoes; n++){
+			
+			
+			
 			for(int i = 0; i < mR.numRows(); i++){
 				
 				for(int j =0; j < mR.numCols(); j++){
@@ -239,7 +359,10 @@ public class MatrizClassica {
 		
 		SparseMatrix mR = getMatrizR();
 		//0.002
-		ArrayList<DenseMatrix> lista = fatoracao(getMatrizR(), getMatrizP(), getMatrizQ(), 500, 0.002, 0.01);
+		//ArrayList<DenseMatrix> lista = fatoracao(getMatrizR(), getMatrizP(), getMatrizQ(), 500, 0.002, 0.01);
+		
+		ArrayList<DenseMatrix> lista = fatoracaoComLista(getListaR(), getMatrizP(), getMatrizQ(), 500, 0.002, 0.01);
+		
 		DenseMatrix p = lista.get(1);
 		DenseMatrix tranQ = lista.get(2);
 		try {
