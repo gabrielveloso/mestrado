@@ -65,7 +65,7 @@ public class Mestrado {
     public static void main(String[] args) {
         try {       
 
-            DataModel dataModel = new FileDataModel(new File("data/ratings_treinamento.cvs"));
+            DataModel dataModel = new FileDataModel(new File("data/ratings_treinamento3.cvs"));
             DataModel dataModelTrust = new FileDataModel(new File("data/trust.cvs"));
             //double alfa = 0.8;
             
@@ -102,13 +102,14 @@ public class Mestrado {
                     SVDRecommender rec = new SVDRecommender(dataModel, factorizerPadrao);
 
                     try {
-                        BufferedReader br = new BufferedReader(new FileReader("data/ratings_data_teste.txt"));
+                        BufferedReader br = new BufferedReader(new FileReader("data/ratings_data_teste3.txt"));
                         String line = "";                      
                         double erroMatriz = 0;  
                         double erroMatrizTrust2 = 0;
                         double erroMatrizTrust3 = 0;
                         double erroMatrizTrust4 = 0;
                         double erroMatrizTrust5 = 0;
+                        double erroMatrizTrust6 = 0;
                         String usuario = null;
                         String item = null;
                         String nota = null;
@@ -164,7 +165,7 @@ public class Mestrado {
                                 if(produto == 0){
                                     notaPreditaMatrizTrust4 = notaPreditaMatriz;
                                 }else{
-                                    notaPreditaMatrizTrust4 = (0.7+medidaRatings)*notaPreditaMatriz + (1-(0.7+medidaRatings))*produto;                               
+                                    notaPreditaMatrizTrust4 = (0.7-medidaRatings)*notaPreditaMatriz + (1-(0.7-medidaRatings))*produto;                               
                                 }
                                 
                                 
@@ -172,7 +173,14 @@ public class Mestrado {
                                 if(produto == 0){
                                     notaPreditaMatrizTrust5 = notaPreditaMatriz;
                                 }else{
-                                    notaPreditaMatrizTrust5 = (0.7+medidaTrust)*notaPreditaMatriz + (1-(0.7 + medidaTrust))*produto;                               
+                                    notaPreditaMatrizTrust5 = (0.7-medidaTrust)*notaPreditaMatriz + (1-(0.7 - medidaTrust))*produto;                               
+                                }
+                                
+                                double notaPreditaMatrizTrust6 = 0;
+                                if(produto == 0){
+                                	notaPreditaMatrizTrust6 = notaPreditaMatriz;
+                                }else{
+                                	notaPreditaMatrizTrust6 = (1-medidaRatings)*notaPreditaMatriz + (medidaRatings)*produto;                               
                                 }
                                 
 //                                if(numeroAvaliacoes > 50){
@@ -198,6 +206,8 @@ public class Mestrado {
                                 
                                 erroMatrizTrust5 += Math.pow((Double.valueOf(nota) - notaPreditaMatrizTrust5),2);
                                 
+                                erroMatrizTrust6 += Math.pow((Double.valueOf(nota) - notaPreditaMatrizTrust6),2);
+                                
                                 
                                 contadorPontos++;
                                 
@@ -211,6 +221,7 @@ public class Mestrado {
                         erroMatrizTrust3 = Math.sqrt(erroMatrizTrust3/contadorPontos);
                         erroMatrizTrust4 = Math.sqrt(erroMatrizTrust4/contadorPontos);
                         erroMatrizTrust5 = Math.sqrt(erroMatrizTrust5/contadorPontos);
+                        erroMatrizTrust6 = Math.sqrt(erroMatrizTrust6/contadorPontos);
                         
                         
                         System.out.println("Taxa de erro - RMSE - Apenas Matriz: " + erroMatriz);  
@@ -218,6 +229,7 @@ public class Mestrado {
                         System.out.println("Taxa de erro - RMSE - utilizando medidaRatings e mediaTrust: " + erroMatrizTrust3); 
                         System.out.println("Taxa de erro - RMSE - utilzando medidaRatings: " + erroMatrizTrust4);   
                         System.out.println("Taxa de erro - RMSE - utilziando medidaTrust: " + erroMatrizTrust5);   
+                        System.out.println("Taxa de erro - RMSE - utilziando medidaratings sem 0.7: " + erroMatrizTrust6);  
                         System.out.println(contadorPontos);
                         System.out.println(numeroUsuariosMenor);
                         br.close();
@@ -237,7 +249,7 @@ public class Mestrado {
         
         try {       
 
-            DataModel dataModel = new FileDataModel(new File("data/ratings_treinamento2.cvs"));
+            DataModel dataModel = new FileDataModel(new File("data/ratings_treinamento4.cvs"));
             DataModel dataModelTrust = new FileDataModel(new File("data/trust.cvs"));
             //double alfa = 0.8;
             
@@ -274,13 +286,14 @@ public class Mestrado {
                     SVDRecommender rec = new SVDRecommender(dataModel, factorizerPadrao);
 
                     try {
-                        BufferedReader br = new BufferedReader(new FileReader("data/ratings_data_teste2.txt"));
+                        BufferedReader br = new BufferedReader(new FileReader("data/ratings_data_teste4.txt"));
                         String line = "";                      
                         double erroMatriz = 0;
                         double erroMatrizTrust2 = 0;                      
                         double erroMatrizTrust3 = 0;
                         double erroMatrizTrust4 = 0;
                         double erroMatrizTrust5 = 0;
+                        double erroMatrizTrust6 = 0;
                         String usuario = null;
                         String item = null;
                         String nota = null;
@@ -337,7 +350,7 @@ public class Mestrado {
                                 if(produto == 0){
                                     notaPreditaMatrizTrust4 = notaPreditaMatriz;
                                 }else{
-                                    notaPreditaMatrizTrust4 = (0.7+medidaRatings)*notaPreditaMatriz + (1-(0.7+medidaRatings))*produto;                               
+                                    notaPreditaMatrizTrust4 = (0.7-medidaRatings)*notaPreditaMatriz + (1-(0.7-medidaRatings))*produto;                               
                                 }
                                 
                                 
@@ -345,7 +358,14 @@ public class Mestrado {
                                 if(produto == 0){
                                     notaPreditaMatrizTrust5 = notaPreditaMatriz;
                                 }else{
-                                    notaPreditaMatrizTrust5 = (0.7+medidaTrust)*notaPreditaMatriz + (1-(0.7 + medidaTrust))*produto;                               
+                                    notaPreditaMatrizTrust5 = (0.7-medidaTrust)*notaPreditaMatriz + (1-(0.7 - medidaTrust))*produto;                               
+                                }
+                                
+                                double notaPreditaMatrizTrust6 = 0;
+                                if(produto == 0){
+                                	notaPreditaMatrizTrust6 = notaPreditaMatriz;
+                                }else{
+                                	notaPreditaMatrizTrust6 = (1-medidaRatings)*notaPreditaMatriz + (medidaRatings)*produto;                               
                                 }
                                 
 //                                if(numeroAvaliacoes > 50){
@@ -371,6 +391,8 @@ public class Mestrado {
                                 
                                 erroMatrizTrust5 += Math.pow((Double.valueOf(nota) - notaPreditaMatrizTrust5),2);
                                 
+                                erroMatrizTrust6 += Math.pow((Double.valueOf(nota) - notaPreditaMatrizTrust6),2);
+                                
                                 
                                 contadorPontos++;
                                 
@@ -384,6 +406,7 @@ public class Mestrado {
                         erroMatrizTrust3 = Math.sqrt(erroMatrizTrust3/contadorPontos);
                         erroMatrizTrust4 = Math.sqrt(erroMatrizTrust4/contadorPontos);
                         erroMatrizTrust5 = Math.sqrt(erroMatrizTrust5/contadorPontos);
+                        erroMatrizTrust6 = Math.sqrt(erroMatrizTrust6/contadorPontos);
                         
                         
                         System.out.println("Taxa de erro - RMSE - Apenas Matriz: " + erroMatriz);      
@@ -391,6 +414,7 @@ public class Mestrado {
                         System.out.println("Taxa de erro - RMSE - utilizando medidaRatings e mediaTrust: " + erroMatrizTrust3); 
                         System.out.println("Taxa de erro - RMSE - utilzando medidaRatings: " + erroMatrizTrust4);   
                         System.out.println("Taxa de erro - RMSE - utilziando medidaTrust: " + erroMatrizTrust5);   
+                        System.out.println("Taxa de erro - RMSE - utilziando medidaRating sem 0.7: " + erroMatrizTrust6);  
                         System.out.println(contadorPontos);
                         System.out.println(numeroUsuariosMenor);
                         br.close();
