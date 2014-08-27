@@ -212,7 +212,7 @@ public class Mahout2 {
                                     notaPreditaMatrizTrust3 = notaPreditaMatriz; 
                                 }else{ 
                                     //notaPreditaMatrizTrust3 = (0.7+medidaRatings-medidaTrust)*notaPreditaMatriz + (1-(0.7+medidaRatings) + medidaTrust)*produto;
-                                	notaPreditaMatrizTrust3 = (0.7+medidaTrust)*notaPreditaMatriz + (1-(0.7+medidaTrust))*produto;
+                                	notaPreditaMatrizTrust3 = (1-medidaRatings)*notaPreditaMatriz + (medidaRatings)*produto;
                                 } 
                                  
                                 if(medidaRatings > 0.5){ 
