@@ -62,10 +62,41 @@ public class Mestrado {
         return resultado;
     }
     
+    
+    public static float calcularProdutoTrustFatoradaComR(int linha, int coluna, SVDRecommender recTrust, SVDRecommender rec){
+        float resultado = 0;
+        numeroUsuarios = 0;
+        try {
+            
+            for(int i = 0; i < recTrust.getDataModel().getNumItems(); i++){
+            	
+            	 try{
+            		float linhaTrust = recTrust.estimatePreference(linha, i);
+	            	float colunaR = rec.estimatePreference(i, coluna);
+	            	numeroUsuarios++;
+	            	resultado = resultado + linhaTrust*colunaR;
+            	 } catch (TasteException e1) {
+                     //System.out.println("NÃO É POSSIVEL PREDIZER A PREFERENCIA DO USUARIO " + id + " " + coluna);
+                 }
+            }
+            
+            if(numeroUsuarios != 0){
+                resultado = resultado/numeroUsuarios;
+                //System.out.print(numeroUsuarios);
+            }
+            
+        } catch (TasteException e1) {
+            //e1.printStackTrace();
+            //System.out.println("O USUARIO " + linha + " NÃO EXPRESSOU CONFIANÇA");
+        }
+        
+        return resultado;
+    }
+    
     public static void main(String[] args) {
         try {       
 
-            DataModel dataModel = new FileDataModel(new File("data/ratings_treinamento3.cvs"));
+            DataModel dataModel = new FileDataModel(new File("data/ratings_treinamento1.cvs"));
             DataModel dataModelTrust = new FileDataModel(new File("data/trust.cvs"));
             //double alfa = 0.8;
             
@@ -98,11 +129,14 @@ public class Mestrado {
                     }
                 }
                     
-                    RatingSGDFactorizer factorizerPadrao = new RatingSGDFactorizer(dataModel,5, 0.0002 , 0.02,0.01, 1000,1.0);
-                    SVDRecommender rec = new SVDRecommender(dataModel, factorizerPadrao);
+                RatingSGDFactorizer factorizerPadrao = new RatingSGDFactorizer(dataModel,5, 0.0002 , 0.02,0.01, 1000,1.0);
+                SVDRecommender rec = new SVDRecommender(dataModel, factorizerPadrao);
+                
+                RatingSGDFactorizer factorizerPadraoTrust = new RatingSGDFactorizer(dataModelTrust,5, 0.0002 , 0.02,0.01, 1000,1.0);
+                SVDRecommender recTrust = new SVDRecommender(dataModelTrust, factorizerPadraoTrust);
 
                     try {
-                        BufferedReader br = new BufferedReader(new FileReader("data/ratings_data_teste3.txt"));
+                        BufferedReader br = new BufferedReader(new FileReader("data/ratings_data_teste1.txt"));
                         String line = "";                      
                         double erroMatriz = 0;  
                         double erroMatrizTrust2 = 0;
@@ -123,10 +157,7 @@ public class Mestrado {
                             int i = Integer.parseInt(usuario);
                             int j = Integer.parseInt(item);
                             
-                            
-                            
-                            try{
-                                
+                            try{                                
                                 
                                 int numeroAvaliacoes = dataModel.getItemIDsFromUser(i).size();
                                 PreferenceArray userLinha = dataModelTrust.getPreferencesFromUser(i);
@@ -135,8 +166,9 @@ public class Mestrado {
                                 float medidaRatings = (float) numeroAvaliacoes/135;
                                 
                                 double notaPreditaMatriz = rec.estimatePreference(i, j);
-                                double produto = calcularProdutoTrustComR(i, j, dataModelTrust, rec);    
+                                double produto = calcularProdutoTrustComR(i, j, dataModelTrust, rec);
                                 
+                                double produtoTrustFatorada = calcularProdutoTrustFatoradaComR(i, j, recTrust, rec);
                                 
                                 double notaPreditaMatrizTrust2 = 0;
                                 
@@ -155,19 +187,28 @@ public class Mestrado {
                                 medidaTrust = (float) usuariosConfiaveis/maxUsuariosConfiaveis;
                                 
                                 if(produto == 0){
-                                    notaPreditaMatrizTrust3 = notaPreditaMatriz;
+                                	notaPreditaMatrizTrust3 = notaPreditaMatriz;
                                 }else{
-                                    notaPreditaMatrizTrust3 = (0.7+medidaRatings-medidaTrust)*notaPreditaMatriz + (1-(0.7+medidaRatings) + medidaTrust)*produto;                               
+                                	notaPreditaMatrizTrust3 = (0.7)*notaPreditaMatriz + (0.3)*produtoTrustFatorada;                               
                                 }
                                 
+//                                double notaPreditaMatrizTrust3 = 0;
+//                                
+//                                medidaRatings = (float) numeroAvaliacoes/maxAvalUsuario;
+//                                medidaTrust = (float) usuariosConfiaveis/maxUsuariosConfiaveis;
+//                                
+//                                if(produto == 0){
+//                                    notaPreditaMatrizTrust3 = notaPreditaMatriz;
+//                                }else{
+//                                    notaPreditaMatrizTrust3 = (0.7+medidaRatings-medidaTrust)*notaPreditaMatriz + (1-(0.7+medidaRatings) + medidaTrust)*produto;                               
+//                                }                                
                                 
                                 double notaPreditaMatrizTrust4 = 0;
                                 if(produto == 0){
                                     notaPreditaMatrizTrust4 = notaPreditaMatriz;
                                 }else{
                                     notaPreditaMatrizTrust4 = (0.7-medidaRatings)*notaPreditaMatriz + (1-(0.7-medidaRatings))*produto;                               
-                                }
-                                
+                                }                                
                                 
                                 double notaPreditaMatrizTrust5 = 0;
                                 if(produto == 0){
@@ -249,7 +290,7 @@ public class Mestrado {
         
         try {       
 
-            DataModel dataModel = new FileDataModel(new File("data/ratings_treinamento4.cvs"));
+            DataModel dataModel = new FileDataModel(new File("data/ratings_treinamento5.cvs"));
             DataModel dataModelTrust = new FileDataModel(new File("data/trust.cvs"));
             //double alfa = 0.8;
             
@@ -286,7 +327,7 @@ public class Mestrado {
                     SVDRecommender rec = new SVDRecommender(dataModel, factorizerPadrao);
 
                     try {
-                        BufferedReader br = new BufferedReader(new FileReader("data/ratings_data_teste4.txt"));
+                        BufferedReader br = new BufferedReader(new FileReader("data/ratings_data_teste5.txt"));
                         String line = "";                      
                         double erroMatriz = 0;
                         double erroMatrizTrust2 = 0;                      
@@ -319,9 +360,7 @@ public class Mestrado {
                                 float medidaRatings = (float) numeroAvaliacoes/135;
                                 
                                 double notaPreditaMatriz = rec.estimatePreference(i, j);
-                                double produto = calcularProdutoTrustComR(i, j, dataModelTrust, rec);  
-                                
-                                
+                                double produto = calcularProdutoTrustComR(i, j, dataModelTrust, rec);                                
                                 
                                 medidaRatings = (float) numeroAvaliacoes/maxAvalUsuario;
                                 medidaTrust = (float) usuariosConfiaveis/maxUsuariosConfiaveis;
