@@ -94,14 +94,14 @@ public class Matrix {
 			//DataModel dataModelFinal = new FileDataModel(new File("data/ratings.cvs"));
 					
 			try {
-				/*SVDPlusPlusFactorizer  factorizer = 
+				SVDPlusPlusFactorizer  factorizer = 
 						new SVDPlusPlusFactorizer(dataModel, 
 								10, 0.0002 , 0.02, 
 								0.01, 100, 1.0);
 				
 				SVDRecommender rec = new SVDRecommender(dataModel, factorizer);
 				
-				/*int i = 0;
+				int i = 0;
 				for(LongPrimitiveIterator users = dataModel.getUserIDs(); users.hasNext();){
 					Long userID = users.nextLong();
 					List<RecommendedItem> itensRecomendados = rec.recommend(userID, 5);
@@ -114,71 +114,11 @@ public class Matrix {
 					if(i > 10){
 						System.exit(1);
 					}
-				}*/;
+				};
 				
-					RatingSGDFactorizer factorizerPadrao = new RatingSGDFactorizer(dataModel,5, 0.0002 , 0.02,0.01, 1000,1.0);
+					/*RatingSGDFactorizer factorizerPadrao = new RatingSGDFactorizer(dataModel,5, 0.0002 , 0.02,0.01, 1000,1.0);
 					SVDRecommender rec = new SVDRecommender(dataModel, factorizerPadrao);
-					
-					
-					//float itemValorteste = rec.estimatePreference(49179, 1);					
-					//SparseMatrix matrizR = new SparseMatrix(dataModel.getNumUsers()+1, dataModel.getNumItems()+1);
-					SparseMatrix matrizR = new SparseMatrix(49291, 139739);
-					double alfa = 0.8;
-					
-					System.gc();
-					
-					int contadorTotal = 0;
-					for(LongPrimitiveIterator users = dataModel.getUserIDs(); users.hasNext();){
-						int contador = 0;
-						Long userID = users.nextLong();
-						for(LongPrimitiveIterator itens = dataModel.getItemIDs(); itens.hasNext();){							
-							Long itemID = itens.nextLong();							
-							float itemValor = rec.estimatePreference(userID, itemID);
-							matrizR.set(userID.intValue(), itemID.intValue(), itemValor);
-							contador++;
-							contadorTotal++;
-							if(contador%1000 == 0){
-								if(contadorTotal%2 == 0){
-									System.gc();
-								}
-							}
-							
-						}
-						System.gc();
-					}
-					
-					//SparseMatrix matrizTrust = new SparseMatrix(dataModelTrust.getNumUsers()+1, dataModelTrust.getNumItems()+1);
-					SparseMatrix matrizTrust = new SparseMatrix(49291, 49291);
-					
-					
-					contadorTotal = 0;
-					for(LongPrimitiveIterator users = dataModelTrust.getUserIDs(); users.hasNext();){
-						int contador = 0;
-						Long userLinhaID = users.nextLong();
-						for(LongPrimitiveIterator usersColunas = dataModelTrust.getItemIDs(); usersColunas.hasNext();){							
-							Long userColunasID = usersColunas.nextLong();
-							Float trustValor = dataModelTrust.getPreferenceValue(userLinhaID, userColunasID);
-							matrizTrust.set(userLinhaID.intValue(), userColunasID.intValue(), trustValor);
-							if(contador%1000 == 0){
-								if(contadorTotal%2 == 0){
-									System.gc();
-								}
-							}
-						}
-						System.gc();
-					}
-					
-					SparseMatrix matrizRFinal = new SparseMatrix(49291, 139739);
-					
-					for(int i = 1; i <= matrizR.numRows(); i++){
-						for(int j =1; j <= matrizR.numCols(); j++){
-							double valorIJ = alfa*matrizR.get(i, j) + (1-alfa)*matrizTrust.viewRow(i).dot(matrizR.viewColumn(j));
-							matrizRFinal.set(i, j, valorIJ);
-							System.gc();
-						}
-						System.gc();
-					}
-					
+					*/
 					
 					
 						
@@ -197,9 +137,10 @@ public class Matrix {
 					double score=evaluator.evaluate(builder, null, dataModel, 0.7, 1.0);	
 					
 			        System.out.println("SVD score is "+score);
-			        */
+			       */ 
 			        
-			       /* RecommenderBuilder builder2 = new RecommenderBuilder() {
+					RecommenderEvaluator evaluator=new RMSRecommenderEvaluator();
+			        RecommenderBuilder builder2 = new RecommenderBuilder() {
 						
 						@Override
 						public Recommender buildRecommender(DataModel dataModel) throws TasteException {
@@ -220,12 +161,13 @@ public class Matrix {
 					};
 					double score3=evaluator.evaluate(builder3, null, dataModel, 0.7, 1.0);
 			        System.out.println("SVD score is "+score3);
-			        */
+			        
 			        
 			        
 			        /*double valores[] = {score, score2, score3};
 			        GeradorGrafico gerador = new GeradorGrafico(valores);
-			        gerador.salvar(new FileOutputStream("saida.png"));*/
+			        gerador.salvar(new FileOutputStream("saida.png"));
+			        */
 			        
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

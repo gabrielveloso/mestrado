@@ -156,7 +156,7 @@ public class Mahout2 {
                                  
                                 double produto = calcularProdutoTrustComR(i, j, dataModelTrust, rec); 
                                  
-                                //System.out.println(","+produto+","+nota); 
+                               // System.out.println(","+produto+","+nota); 
                                  
                                 double notaPreditaMatrizTrust = alfa*notaPreditaMatriz  
                                                                 + (1-alfa)*produto; 
