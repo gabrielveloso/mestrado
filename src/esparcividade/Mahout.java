@@ -249,9 +249,13 @@ public class Mahout {
                                 medidaTrust = medida1/(medida1 + medida2);
                                 medidaRatings = medida2/(medida1 + medida2);
                                 
+                                float medida1Trust = (float)usuariosConfiaveis/(float)numeroMaximoUserTrust;
+                                
+                                float medida2Matriz = (float)numeroAvaliacoes/(float)numeroMaximoAval;
+                                
                                 double notaPreditaMatrizTrust5 = (1 - medida1*0.2)*notaPreditaMatriz 
                                         + (medida1*0.8)*valorTrust;
-                                //System.out.println("usuario " + i + " medida " + medida1);
+                                System.out.println("usuario " + i +usuariosConfiaveis+numeroAvaliacoes + " medida " + medida1);
                                 
                                 if(valorTrust == 0.0){
                                 	notaPreditaMatrizTrust5 = notaPreditaMatriz;
