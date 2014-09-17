@@ -47,7 +47,6 @@ public class Gerador {
 			bwTeste.close();
 			
 			if(quantidadeLinhas < 660000){
-				//br = new BufferedReader(new FileReader("data/ratings_data.txt"));
 				
 				br = new BufferedReader(new FileReader("data/dados10/ratings_data_treinamento1temp.txt"));
 				bwTeste = new BufferedWriter(new FileWriter("data/dados10/ratings_data_teste1.txt"));
@@ -75,15 +74,6 @@ public class Gerador {
 				}
 				
 			}
-			
-
-//			BufferedReader brTeste = new BufferedReader(new FileReader("data/dados10/ratings_data_teste1temp.txt"));
-//			
-//			while((line = br.readLine()) != null){
-//				String[] values = line.split(" ");
-//			
-//			
-//			}
 				
 			br.close();
 			bwTreino.close();
@@ -92,6 +82,116 @@ public class Gerador {
 			
 		}
 	}
+	
+	public static void preperarDados2(){
+		
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("data/ratings_data_treinamento1.txt"));
+			BufferedWriter bwTeste = new BufferedWriter(new FileWriter("data/dados10/ratings_data_teste2temp.txt"));
+			BufferedWriter bwTreino = new BufferedWriter(new FileWriter("data/dados10/ratings_data_treinamento2temp.txt"));			
+			
+			int quantidadeLinhas = 0;
+			String line = "";
+			int contador = 0;
+			String valorAnterior = "";
+			while((line = br.readLine()) != null){
+				String[] values = line.split(" ");
+				
+				if(!values[0].equals(valorAnterior)){
+					contador++;
+					if(contador == 1){
+						bwTeste.write(values[0] + " " + values[1] + " " + values[2] + "\n");
+						valorAnterior = values[0];
+						contador =0;
+						quantidadeLinhas++;
+					}else{
+						bwTreino.write(values[0] + " " + values[1] + " " + values[2] + "\n");
+					}
+					
+				}else{
+					bwTreino.write(values[0] + " " + values[1] + " " + values[2] + "\n");
+					valorAnterior = values[0];
+				}			
+				
+			}
+			
+			br.close();
+			bwTreino.close();
+			bwTeste.close();
+			
+			if(quantidadeLinhas < 660000){
+				
+				br = new BufferedReader(new FileReader("data/dados10/ratings_data_treinamento2temp.txt"));
+				bwTeste = new BufferedWriter(new FileWriter("data/dados10/ratings_data_teste2temp2.txt"));
+				bwTreino = new BufferedWriter(new FileWriter("data/dados10/ratings_data_treinamento2.txt"));
+				
+				while((line = br.readLine()) != null ){
+					String[] values = line.split(" ");
+					
+					if(!values[0].equals(valorAnterior) && quantidadeLinhas < 66000){
+						contador++;
+						if(contador == 1){
+							bwTeste.write(values[0] + " " + values[1] + " " + values[2] + "\n");
+							valorAnterior = values[0];
+							contador =0;
+							quantidadeLinhas++;
+						}else{
+							bwTreino.write(values[0] + " " + values[1] + " " + values[2] + "\n");
+						}
+						
+					}else{
+						bwTreino.write(values[0] + " " + values[1] + " " + values[2] + "\n");
+						valorAnterior = values[0];
+					}			
+					
+				}
+				
+			}
+			
+			br.close();
+			bwTreino.close();
+			bwTeste.close();
+			
+			if(quantidadeLinhas < 660000){
+				
+				br = new BufferedReader(new FileReader("data/dados10/ratings_data_treinamento2.txt"));
+				bwTeste = new BufferedWriter(new FileWriter("data/dados10/ratings_data_teste2.txt"));
+				bwTreino = new BufferedWriter(new FileWriter("data/dados10/ratings_data_treinamento2final.txt"));
+				
+				while((line = br.readLine()) != null ){
+					String[] values = line.split(" ");
+					
+					if(!values[0].equals(valorAnterior) && quantidadeLinhas < 66000){
+						contador++;
+						if(contador == 1){
+							bwTeste.write(values[0] + " " + values[1] + " " + values[2] + "\n");
+							valorAnterior = values[0];
+							contador =0;
+							quantidadeLinhas++;
+						}else{
+							bwTreino.write(values[0] + " " + values[1] + " " + values[2] + "\n");
+						}
+						
+					}else{
+						bwTreino.write(values[0] + " " + values[1] + " " + values[2] + "\n");
+						valorAnterior = values[0];
+					}			
+					
+				}
+				
+			}
+				
+			br.close();
+			bwTreino.close();
+			bwTeste.close();
+		}catch(IOException e){
+			
+		}
+	}
+	
+	
+	
+	
 	
 	public static void arquivoCVS(){
 		try {
@@ -117,6 +217,6 @@ public class Gerador {
 	
 	public static void main(String[] args) {
 		
-		Gerador.preperarDados();
+		Gerador.preperarDados2();
 	}
 }
