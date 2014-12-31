@@ -353,7 +353,7 @@ public class Hibrido {
             				sum_maesHibrida2medida += Math.abs(Integer.parseInt(nota) - notaHibrida);
             				
             				//3 medida de esparsividade
-            				taxaRatings = (double)dataModel.getPreferencesFromUser(i).length()/(2*6);	
+            				taxaRatings = (double)dataModel.getPreferencesFromUser(i).length()/(2*4);	
             				if(taxaRatings > 1){
             					taxaRatings = 1;
             				}

@@ -162,6 +162,9 @@ public class Hibrido2 {
                         double sum_maesHibrida3medida1 = 0;
                         double sum_maesHibrida3medida2 = 0;
                         double sum_maesHibrida3medida3 = 0;
+                        double sum_maesHibrida4medida = 0;
+                        double sum_maesHibrida5medida = 0;
+                        double sum_maesHibrida6medida = 0;
                         double contadorHibrido = 0;
                         double contadorHibrido1 = 0;
                         double contadorHibrido2 = 0;
@@ -268,6 +271,7 @@ public class Hibrido2 {
                         		scores = new HashMap<>();
                         	}
                         	
+                        	int qtdAmigosAvaliaramItem = 0;
                         	// PARA CADA AMIGO, CALCULA A MEDIA DO AMIGO, A NOTA DADA PELO AMIGO PARA O ITEM
                         	//SUBTRAI A NOTA DA MEDIA DO AMIGO
                         	for(String amigo : scores.keySet()){
@@ -288,6 +292,7 @@ public class Hibrido2 {
                     				double rai = 0;
                     				try{
                     					rai = dataModel.getPreferenceValue(friend, j);
+                    					qtdAmigosAvaliaramItem++;
                     				}catch(Exception te){
                     					continue;
                     				}
@@ -347,9 +352,9 @@ public class Hibrido2 {
                 					contadorPontos3++;
                             	}
                 				
-                        	} 
+                        	}
                         	
-                        	// se rui é igual a zero utilizar somente nota da matriz
+                        	
                         	
             				double taxaRatings = (double)dataModel.getPreferencesFromUser(i).length()/(double)numeroMaximoAval;	
             				double alpha = 0;
@@ -357,7 +362,9 @@ public class Hibrido2 {
             					alpha = 1;
             				}else{
             					alpha = Math.abs(Math.log(taxaRatings))/Math.log(10000);
-            				}            				
+            				}  
+            				
+            				// se rui é igual a zero utilizar somente nota da matriz
             				if(rui == 0){
             					alpha = 0;
             				}            				
@@ -423,10 +430,43 @@ public class Hibrido2 {
                         	}
             				
             				contadorHibrido++;
-                    	 
             				
             				
-                        	
+            				taxaRatings = qtdAmigosAvaliaramItem/(2*6);            				
+            				if(rui == 0){
+            					taxaRatings = 1;
+            				}
+            				notaHibrida = (1 - taxaRatings)*rui + taxaRatings*notaPreditaSemRound;
+            				sum_maesHibrida4medida += Math.abs(Integer.parseInt(nota) - notaHibrida);
+            				
+            				if(dataModel.getPreferencesForItem(j).length() != 0){
+            					taxaRatings = qtdAmigosAvaliaramItem/(double)dataModel.getPreferencesForItem(j).length();
+            				}else{
+            					taxaRatings = 1;
+            				}
+            				if(rui == 0){
+            					taxaRatings = 1;
+            				}
+            				notaHibrida = (1 - taxaRatings)*rui + taxaRatings*notaPreditaSemRound;
+            				sum_maesHibrida5medida += Math.abs(Integer.parseInt(nota) - notaHibrida);
+            				
+            				if(scores.keySet().size() != 0){
+            					taxaRatings = qtdAmigosAvaliaramItem/(double)scores.keySet().size();
+            				}else{
+            					taxaRatings = 1;
+            				}
+            				if(rui == 0){
+            					taxaRatings = 1;
+            				}
+            				notaHibrida = (1 - taxaRatings)*rui + taxaRatings*notaPreditaSemRound;
+            				sum_maesHibrida6medida += Math.abs(Integer.parseInt(nota) - notaHibrida);
+            				
+            				
+            				
+                        	//fazer pra outras medidas de esparsidade (artigo)
+            				//aumentar a profundidade do moletrust
+            				
+            				
                         }
                         
                         erroMAE = sum_maes/contadorPontos;
@@ -465,6 +505,11 @@ public class Hibrido2 {
                         System.out.println("MAE HIBRIDA MEDIDA 3 <= 10: " + sum_maesHibrida3medida1/contadorHibrido3medida1 );
                         System.out.println("MAE HIBRIDA MEDIDA 3 ENTRE 10 E 100: " + sum_maesHibrida3medida2/contadorHibrido3medida2 );
                         System.out.println("MAE HIBRIDA MEDIDA 3 MAIOR QUE 100: " + sum_maesHibrida3medida3/contadorHibrido3medida3 );
+                        
+                        System.out.println("MAE HIBRIDA MEDIDA 3 TODOS: " + sum_maesHibrida3medida/contadorHibrido );                        
+                        System.out.println("MAE HIBRIDA MEDIDA 4 TODOS: " + sum_maesHibrida4medida/contadorHibrido );
+                        System.out.println("MAE HIBRIDA MEDIDA 5 TODOS: " + sum_maesHibrida5medida/contadorHibrido );
+                        System.out.println("MAE HIBRIDA MEDIDA 6 TODOS: " + sum_maesHibrida6medida/contadorHibrido );
                       
                         br.close();
                     }catch (Exception e) {
