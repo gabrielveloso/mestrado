@@ -432,11 +432,16 @@ public class Hibrido2 {
             				contadorHibrido++;
             				
             				
-            				taxaRatings = qtdAmigosAvaliaramItem/(2*6);            				
+            				taxaRatings = (double)qtdAmigosAvaliaramItem/(double)(2*6);
+            				if(taxaRatings > 1){
+            					taxaRatings = 1;
+            				}
+            				
             				if(rui == 0){
             					taxaRatings = 1;
             				}
             				notaHibrida = (1 - taxaRatings)*rui + taxaRatings*notaPreditaSemRound;
+            				notaHibrida = Math.round(notaHibrida);
             				sum_maesHibrida4medida += Math.abs(Integer.parseInt(nota) - notaHibrida);
             				
             				if(dataModel.getPreferencesForItem(j).length() != 0){
@@ -448,6 +453,7 @@ public class Hibrido2 {
             					taxaRatings = 1;
             				}
             				notaHibrida = (1 - taxaRatings)*rui + taxaRatings*notaPreditaSemRound;
+            				notaHibrida = Math.round(notaHibrida);
             				sum_maesHibrida5medida += Math.abs(Integer.parseInt(nota) - notaHibrida);
             				
             				if(scores.keySet().size() != 0){
@@ -459,6 +465,7 @@ public class Hibrido2 {
             					taxaRatings = 1;
             				}
             				notaHibrida = (1 - taxaRatings)*rui + taxaRatings*notaPreditaSemRound;
+            				notaHibrida = Math.round(notaHibrida);
             				sum_maesHibrida6medida += Math.abs(Integer.parseInt(nota) - notaHibrida);
             				
             				
