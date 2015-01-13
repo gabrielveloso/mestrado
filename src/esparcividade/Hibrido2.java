@@ -163,8 +163,17 @@ public class Hibrido2 {
                         double sum_maesHibrida3medida2 = 0;
                         double sum_maesHibrida3medida3 = 0;
                         double sum_maesHibrida4medida = 0;
+                        double sum_maesHibrida4medida1 = 0;
+                        double sum_maesHibrida4medida2 = 0;
+                        double sum_maesHibrida4medida3 = 0;
                         double sum_maesHibrida5medida = 0;
+                        double sum_maesHibrida5medida1 = 0;
+                        double sum_maesHibrida5medida2 = 0;
+                        double sum_maesHibrida5medida3 = 0;
                         double sum_maesHibrida6medida = 0;
+                        double sum_maesHibrida6medida1 = 0;
+                        double sum_maesHibrida6medida2 = 0;
+                        double sum_maesHibrida6medida3 = 0;
                         double contadorHibrido = 0;
                         double contadorHibrido1 = 0;
                         double contadorHibrido2 = 0;
@@ -175,6 +184,16 @@ public class Hibrido2 {
                         double contadorHibrido3medida1 = 0;
                         double contadorHibrido3medida2 = 0;
                         double contadorHibrido3medida3 = 0;
+                        double contadorHibrido4medida1 = 0;
+                        double contadorHibrido4medida2 = 0;
+                        double contadorHibrido4medida3 = 0;
+                        double contadorHibrido5medida1 = 0;
+                        double contadorHibrido5medida2 = 0;
+                        double contadorHibrido5medida3 = 0;
+                        double contadorHibrido6medida1 = 0;
+                        double contadorHibrido6medida2 = 0;
+                        double contadorHibrido6medida3 = 0;
+                        
                         while((line = br.readLine()) != null){
                             String[] values = line.split(" ");
                             usuario = values[0];
@@ -263,7 +282,7 @@ public class Hibrido2 {
             				Map<String, Double> scores = new HashMap<>();
                         	try{
                         		 //scores = userTrustorsMap.get(i+"");
-                        		 scores = MoleTrust(userTrustorsMap, i+"", 2);
+                        		 scores = MoleTrust(userTrustorsMap, i+"", 1);
                         	}catch(Exception e){
                         		System.out.println(e.getMessage());
                         	}
@@ -466,6 +485,19 @@ public class Hibrido2 {
             				notaHibrida = (1 - taxaRatings)*rui + taxaRatings*notaPreditaSemRound;
             				notaHibrida = Math.round(notaHibrida);
             				sum_maesHibrida4medida += Math.abs(Integer.parseInt(nota) - notaHibrida);
+            				erroHibrido = Integer.parseInt(nota) - notaHibrida;
+            				
+            				if(qtdAvaliacoes <= 10){
+            					sum_maesHibrida4medida1 += Math.abs(erroHibrido);
+            					contadorHibrido4medida1++;
+                        	}else if(qtdAvaliacoes > 10 && qtdAvaliacoes <= 100){
+                        		sum_maesHibrida4medida2 += Math.abs(erroHibrido);
+            					contadorHibrido4medida2++;
+                        	}else if(qtdAvaliacoes > 100){
+                        		sum_maesHibrida4medida3 += Math.abs(erroHibrido);
+            					contadorHibrido4medida3++;
+                        	}
+            				
             				
             				//
                         	// MEDIDA ESPARSIDADE 5 
@@ -484,7 +516,18 @@ public class Hibrido2 {
             				notaHibrida = (1 - taxaRatings)*rui + taxaRatings*notaPreditaSemRound;
             				notaHibrida = Math.round(notaHibrida);
             				sum_maesHibrida5medida += Math.abs(Integer.parseInt(nota) - notaHibrida);
+            				erroHibrido = Integer.parseInt(nota) - notaHibrida;
             				
+            				if(qtdAvaliacoes <= 10){
+            					sum_maesHibrida5medida1 += Math.abs(erroHibrido);
+            					contadorHibrido5medida1++;
+                        	}else if(qtdAvaliacoes > 10 && qtdAvaliacoes <= 100){
+                        		sum_maesHibrida5medida2 += Math.abs(erroHibrido);
+            					contadorHibrido5medida2++;
+                        	}else if(qtdAvaliacoes > 100){
+                        		sum_maesHibrida5medida3 += Math.abs(erroHibrido);
+            					contadorHibrido5medida3++;
+                        	}
             				//
                         	// MEDIDA ESPARSIDADE 6 
                         	// NUMERO DE AMIGOS QUE AVALIARAM O ITEM J DIVIDO PELO NÚMERO TOTAL DE AMIGOS
@@ -501,7 +544,18 @@ public class Hibrido2 {
             				notaHibrida = (1 - taxaRatings)*rui + taxaRatings*notaPreditaSemRound;
             				notaHibrida = Math.round(notaHibrida);
             				sum_maesHibrida6medida += Math.abs(Integer.parseInt(nota) - notaHibrida);
+            				erroHibrido = Integer.parseInt(nota) - notaHibrida;
             				
+            				if(qtdAvaliacoes <= 10){
+            					sum_maesHibrida6medida1 += Math.abs(erroHibrido);
+            					contadorHibrido6medida1++;
+                        	}else if(qtdAvaliacoes > 10 && qtdAvaliacoes <= 100){
+                        		sum_maesHibrida6medida2 += Math.abs(erroHibrido);
+            					contadorHibrido6medida2++;
+                        	}else if(qtdAvaliacoes > 100){
+                        		sum_maesHibrida6medida3 += Math.abs(erroHibrido);
+            					contadorHibrido6medida3++;
+                        	}
             				
             				
                         	//fazer pra outras medidas de esparsidade (artigo)
@@ -546,6 +600,20 @@ public class Hibrido2 {
                         System.out.println("MAE HIBRIDA MEDIDA 3 <= 10: " + sum_maesHibrida3medida1/contadorHibrido3medida1 );
                         System.out.println("MAE HIBRIDA MEDIDA 3 ENTRE 10 E 100: " + sum_maesHibrida3medida2/contadorHibrido3medida2 );
                         System.out.println("MAE HIBRIDA MEDIDA 3 MAIOR QUE 100: " + sum_maesHibrida3medida3/contadorHibrido3medida3 );
+                        System.out.println("MAE HIBRIDA MEDIDA 4 <= 10: " + sum_maesHibrida4medida1/contadorHibrido4medida1 );
+                        System.out.println("MAE HIBRIDA MEDIDA 4 ENTRE 10 E 100: " + sum_maesHibrida4medida2/contadorHibrido4medida2 );
+                        System.out.println("MAE HIBRIDA MEDIDA 4 MAIOR QUE 100: " + sum_maesHibrida4medida3/contadorHibrido4medida3 );
+                        System.out.println("MAE HIBRIDA MEDIDA 5 <= 10: " + sum_maesHibrida5medida1/contadorHibrido5medida1 );
+                        System.out.println("MAE HIBRIDA MEDIDA 5 ENTRE 10 E 100: " + sum_maesHibrida5medida2/contadorHibrido5medida2 );
+                        System.out.println("MAE HIBRIDA MEDIDA 5 MAIOR QUE 100: " + sum_maesHibrida5medida3/contadorHibrido5medida3 );
+                        System.out.println("MAE HIBRIDA MEDIDA 6 <= 10: " + sum_maesHibrida6medida1/contadorHibrido6medida1 );
+                        System.out.println("MAE HIBRIDA MEDIDA 6 ENTRE 10 E 100: " + sum_maesHibrida6medida2/contadorHibrido6medida2 );
+                        System.out.println("MAE HIBRIDA MEDIDA 6 MAIOR QUE 100: " + sum_maesHibrida6medida3/contadorHibrido6medida3 );
+                        
+                        System.out.println(sum_maesHibrida1/contadorHibrido1+","+sum_maesHibrida2/contadorHibrido2+","+sum_maesHibrida3/contadorHibrido3);
+                        System.out.println(sum_maesHibrida2medida1/contadorHibrido2medida1+","+sum_maesHibrida2medida2/contadorHibrido2medida2+","+sum_maesHibrida2medida3/contadorHibrido2medida3);
+                        System.out.println(sum_maesHibrida3medida1/contadorHibrido3medida1+","+sum_maesHibrida3medida2/contadorHibrido3medida2+","+sum_maesHibrida3medida3/contadorHibrido3medida3);
+                        //System.out.println(sum_maesHibrida1/contadorHibrido1+","+sum_maesHibrida2/contadorHibrido2+","+sum_maesHibrida3/contadorHibrido3);
                         
                         System.out.println("MAE HIBRIDA MEDIDA 1 TODOS: " + sum_maesHibrida/contadorHibrido );
                         System.out.println("MAE HIBRIDA MEDIDA 2 TODOS: " + sum_maesHibrida2medida/contadorHibrido );
