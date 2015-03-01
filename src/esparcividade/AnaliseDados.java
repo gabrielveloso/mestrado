@@ -27,13 +27,16 @@ import org.apache.mahout.cf.taste.model.PreferenceArray;
 
 //explicação do SGD mahout
 //https://mahout.apache.org/users/recommender/matrix-factorization.html
+
+//amostragem probabilista, estratificada, etc
+//http://www.mbi.com.br/mbi/biblioteca/tutoriais/estratificacao/
 public class AnaliseDados {
 	
     public static void main(String[] args) {
         try {
         	
             //DataModel dataModel = new FileDataModel(new File("C:\\Users\\gabriel\\git\\mestrado\\data\\ratings_treinamento1.cvs"));
-    		DataModel dataModel = new FileDataModel(new File("C:\\Users\\gabriel\\Desktop\\dados_epinions_alchemy\\ratings_novo.cvs"));
+    		DataModel dataModel = new FileDataModel(new File("C:\\Users\\gabriel\\Desktop\\conjuntoDados\\PAOLO\\ratings.cvs"));
             DataModel dataModelTrust = new FileDataModel(new File("C:\\Users\\gabriel\\Desktop\\trust.cvs"));            
                     
             try {
@@ -56,12 +59,19 @@ public class AnaliseDados {
             		int cont5 =0;
             		int cont6 =0;
             		int cont7 =0;
+            		int cont8 =0;
+            		int cont9 =0;
+            		int cont10 =0;
             		
             		int numUsuario = 0;
             		LongPrimitiveIterator idUsuarios = dataModel.getUserIDs();
+            		long usuarioAnterior = -1;
+            		long usuario = 0;
+            		
+            		int contadorUsuarios = 0;
             		while(idUsuarios.hasNext()){
             			numUsuario++;
-            			Long usuario = idUsuarios.next();
+            			usuario = idUsuarios.next();
             			FastIDSet conjItens = dataModel.getItemIDsFromUser(usuario);
             			LongPrimitiveIterator idItens = conjItens.iterator();
             			while(idItens.hasNext()){
@@ -79,8 +89,11 @@ public class AnaliseDados {
 //                            	} 
             					
             					
-            					if(qtdAvaliacoes <= 10){
+            					if(qtdAvaliacoes < 5){
                             		contador1++;
+                            		if(usuario != usuarioAnterior){
+                            			contadorUsuarios++;
+                            		}
                             	}else if(qtdAvaliacoes > 10 && qtdAvaliacoes <= 20){
                             		contador2++;
                             	}else if(qtdAvaliacoes > 20 && qtdAvaliacoes <= 30){
@@ -103,7 +116,7 @@ public class AnaliseDados {
                             		contador11++;
                             	} 
             					
-            					int base = 2;
+            					int base = 10;
             					if((Math.log(qtdAvaliacoes)/Math.log(base)) <= 1){
             						cont1++;
             					}else if((Math.log(qtdAvaliacoes)/Math.log(base)) <= 2){
@@ -118,13 +131,21 @@ public class AnaliseDados {
             						cont6++;
             					}else if((Math.log(qtdAvaliacoes)/Math.log(base)) <= 7){
             						cont7++;
+            					}else if((Math.log(qtdAvaliacoes)/Math.log(base)) <= 8){
+            						cont8++;
+            					}else if((Math.log(qtdAvaliacoes)/Math.log(base)) <= 9){
+            						cont9++;
+            					}else if((Math.log(qtdAvaliacoes)/Math.log(base)) <= 10){
+            						cont10++;
             					}
-}
+            				}
+            				usuarioAnterior = usuario;
             			}
+            			
             		}
             		
             		System.out.println("QUANTIDADE DE USUARIOS " + numUsuario);
-            		System.out.println("QUANTIDADE DE AVALIAÇÕES 1 " + contador1);
+            		System.out.println("QUANTIDADE DE AVALIAÇÕES 1 " + contador1 + " "+contadorUsuarios);
             		System.out.println("QUANTIDADE DE AVALIAÇÕES 2 " + contador2);
             		System.out.println("QUANTIDADE DE AVALIAÇÕES 3 " + contador3);
             		
@@ -147,6 +168,9 @@ public class AnaliseDados {
             		System.out.println(cont5);
             		System.out.println(cont6);
             		System.out.println(cont7);
+            		System.out.println(cont8);
+            		System.out.println(cont9);
+            		System.out.println(cont10);
             		
             	
             } catch (Exception e) {

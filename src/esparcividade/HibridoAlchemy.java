@@ -26,7 +26,7 @@ import org.apache.mahout.cf.taste.model.PreferenceArray;
 
 //explicação do SGD mahout
 //https://mahout.apache.org/users/recommender/matrix-factorization.html
-public class Hibrido2 {
+public class HibridoAlchemy {
     
     public static void main(String[] args) {
         try {
@@ -36,6 +36,7 @@ public class Hibrido2 {
     		try {
     			//C:\\Users\\gabriel\\git\\librec-mestrado\\librec\\dadosTreinamento\\trust_data.txt
     			//C:\\Users\\gabriel\\Desktop\\dados_epinions_alchemy\\trust_data.txt
+    			//fr = new BufferedReader(new FileReader("C:\\Users\\gabriel\\git\\mestrado\\data\\trust_data.txt"));
     			fr = new BufferedReader(new FileReader("C:\\Users\\gabriel\\Desktop\\dados_epinions_alchemy\\trust_data.txt"));
     		} catch (FileNotFoundException e) {
     			// TODO Auto-generated catch block
@@ -77,9 +78,13 @@ public class Hibrido2 {
     		
     		
 
-            //DataModel dataModel = new FileDataModel(new File("C:\\Users\\gabriel\\git\\mestrado\\data\\ratings_treinamento1.cvs"));
-    		DataModel dataModel = new FileDataModel(new File("C:\\Users\\gabriel\\Desktop\\dados_epinions_alchemy\\ratings_novo.cvs"));
-            DataModel dataModelTrust = new FileDataModel(new File("C:\\Users\\gabriel\\Desktop\\trust.cvs"));            
+    		//DataModel dataModel = new FileDataModel(new File("C:\\Users\\gabriel\\Desktop\\conjuntoDados\\PAOLO\\ratings.cvs"));
+    		//DataModel dataModeltrain = new FileDataModel(new File("C:\\Users\\gabriel\\Desktop\\conjuntoDados\\PAOLO\\train3.arff"));
+           // DataModel dataModelTrust = new FileDataModel(new File("C:\\Users\\gabriel\\Desktop\\conjuntoDados\\PAOLO\\trust.cvs"));  
+            
+    		DataModel dataModeltrain = new FileDataModel(new File("C:\\Users\\gabriel\\Desktop\\dados_epinions_alchemy\\train1.arff"));
+            DataModel dataModel = new FileDataModel(new File("C:\\Users\\gabriel\\Desktop\\dados_epinions_alchemy\\ratings_novo.cvs"));
+            DataModel dataModelTrust = new FileDataModel(new File("C:\\Users\\gabriel\\Desktop\\dados_epinions_alchemy\\trust_novo.cvs"));
                     
             try {
             	
@@ -107,13 +112,13 @@ public class Hibrido2 {
             	}
                 
                     
-                    RatingSGDFactorizer factorizerPadrao = new RatingSGDFactorizer(dataModel,5, 0.0002 , 0.02,0.01, 1000,1.0);
-                    SVDRecommender rec = new SVDRecommender(dataModel, factorizerPadrao);
+                    RatingSGDFactorizer factorizerPadrao = new RatingSGDFactorizer(dataModeltrain,5, 0.0002 , 0.02,0.01, 1000,1.0);
+                    SVDRecommender rec = new SVDRecommender(dataModeltrain, factorizerPadrao);
 
                     try {
-                        //BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\gabriel\\git\\mestrado\\data\\ratings_data.txt"));
                         
-                    	BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\gabriel\\Desktop\\dados_epinions_alchemy\\testealchemy.txt"));
+                    	//BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\gabriel\\Desktop\\conjuntoDados\\PAOLO\\test3.arff"));
+                    	BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\gabriel\\Desktop\\dados_epinions_alchemy\\test1.arff"));
                         String line = "";                        
                         double erroRMSE = 0;
                         double erroMAE = 0;                       
@@ -223,7 +228,7 @@ public class Hibrido2 {
                         double contadorHibrido7medida3 = 0;
                         
                         while((line = br.readLine()) != null){
-                            String[] values = line.split(" ");
+                            String[] values = line.split(",");
                             usuario = values[0];
                             item = values[1];
                             nota = values[2];
@@ -234,7 +239,11 @@ public class Hibrido2 {
                             double mediaAtivo = 0;
                             
                             double qtdAvaliacoes =0;
-                            qtdAvaliacoes = dataModel.getPreferencesFromUser(i).length();
+                            try{
+                            	qtdAvaliacoes = dataModel.getPreferencesFromUser(i).length();
+                            }catch(Exception e){
+                            	System.out.println("parou aqui");
+                            }
                             if(qtdAvaliacoes <= 10){
                         		contadorPontos1teste++;
                         	}else if(qtdAvaliacoes > 10 && qtdAvaliacoes <= 100){
@@ -244,11 +253,11 @@ public class Hibrido2 {
                         	}                            
                             
                             
-                            // CALCULO DA NOTA PREDITA DA MATRIZ FATORAÇÃO
+                            // CALCULO DA NOTA PREDITA DA FATORAÇÃO DE MATRIZ
                             double notaPreditaMatriz = 0;
                             double notaPreditaSemRound = 0;
                             try{ 
-                            	notaPreditaSemRound = rec.estimatePreference(i, j);
+                            	notaPreditaSemRound = rec.estimatePreference(i, j); // SE LEVANTAR EXCEPTION NOTA = 0
                             	notaPreditaMatriz = Math.round(notaPreditaSemRound);
                             	if(notaPreditaMatriz < 1){
                             		notaPreditaMatriz = 1;
@@ -447,34 +456,11 @@ public class Hibrido2 {
                 				
                         	}
                         	
-                        	// intens controversos segundo moletrust
-//                        	 if(ruiRound != 0){
-//	                        	 int preferenciasItem = dataModel.getPreferencesForItem(j).length();
-//	                        	 PreferenceArray pref = dataModel.getPreferencesForItem(j);
-//	                             float soma = 0;
-//	                             for(int p = 0; p < preferenciasItem; p++){
-//	                             	soma += pref.get(p).getValue();
-//	                             }
-//	                             float media = soma/preferenciasItem;
-//	                             double variancia = 0;
-//	                             
-//	                             for(int p = 0; p < preferenciasItem; p++){
-//	                             	 variancia += Math.pow((pref.get(p).getValue() - media),2);
-//	                             }
-//	                             variancia = Math.sqrt(variancia/preferenciasItem);
-//	                             double erroRuiControv =0;
-//	                             
-//	                             if(variancia > 1.5){
-//	                            	erroRuiControv = Double.parseDouble(nota) - ruiRound;
-//	                             	sum_maeItensControvMatriz1+=Math.abs(erroRuiControv);
-//	                             	contadorItensControvMatriz1++;
-//	                             }else{
-//	                            	erroRuiControv = Double.parseDouble(nota) - ruiRound;
-//	                             	sum_maeItensControvMatriz2+=Math.abs(erroRuiControv);
-//	                             	contadorItensControvMatriz2++;
-//	                             }
-//                        	 }
-//                        	
+                        	
+                        	if(notaPreditaSemRound != 0){
+                        	
+                        	contadorHibrido++;
+
                         	/**
                         	 * AQUI É FEITO O CALCULADA DA NOTA PREDITA BASEADO NAS DUAS TÉCNICAS
                         	 * SERÃO CACULADAS A PARTIR DA EQUAÇÃO (1), UTILZIAND MEDIDAS DE ESPARSIDADE
@@ -497,7 +483,10 @@ public class Hibrido2 {
             				// se rui é igual a zero utilizar somente nota da matriz
             				if(rui == 0){
             					alpha = 0;
-            				}            				
+            				}    
+            				if(notaPreditaSemRound == 0){
+            					alpha = 1;
+            				}
             				double notaHibrida = alpha*rui + (1 - alpha)*notaPreditaSemRound;             				
             				notaHibrida = Math.round(notaHibrida);  
             				double erroHibrido = Integer.parseInt(nota) - notaHibrida;
@@ -519,11 +508,13 @@ public class Hibrido2 {
                         	//
                         	//
                         	
-            				if((double)dataModel.getPreferencesFromUser(i).length() < 10 && ruiRound > 0){
+            				if((double)dataModel.getPreferencesFromUser(i).length() < 10 && ruiRound > 0 || notaPreditaMatriz == 0){
             					notaHibrida = ruiRound;
-            				}else{
+            				}else {
             					notaHibrida = notaPreditaMatriz;
             				}
+            				
+            				notaHibrida = notaPreditaMatriz;
             				sum_maesHibrida2medida += Math.abs(Integer.parseInt(nota) - notaHibrida);
             				erroHibrido = Integer.parseInt(nota) - notaHibrida;
             				
@@ -550,6 +541,9 @@ public class Hibrido2 {
             				if(rui == 0){
             					taxaRatings = 1;
             				}   
+            				if(notaPreditaSemRound == 0){
+            					taxaRatings = 0;
+            				}
             				
             				notaHibrida = (1 - taxaRatings)*rui + taxaRatings*notaPreditaSemRound;
             				notaHibrida = Math.round(notaHibrida); 
@@ -567,7 +561,7 @@ public class Hibrido2 {
             					contadorHibrido3medida3++;
                         	}
             				
-            				contadorHibrido++;
+            				
             				
             				//
                         	// MEDIDA ESPARSIDADE 4
@@ -582,6 +576,11 @@ public class Hibrido2 {
             				if(rui == 0){
             					taxaRatings = 1;
             				}
+            				
+            				if(notaPreditaSemRound == 0){
+            					taxaRatings = 0;
+            				}
+            				
             				notaHibrida = (1 - taxaRatings)*rui + taxaRatings*notaPreditaSemRound;
             				notaHibrida = Math.round(notaHibrida);
             				sum_maesHibrida4medida += Math.abs(Integer.parseInt(nota) - notaHibrida);
@@ -613,6 +612,11 @@ public class Hibrido2 {
             				if(rui == 0){
             					taxaRatings = 1;
             				}
+            				
+            				if(notaPreditaSemRound == 0){
+            					taxaRatings = 0;
+            				}
+            				
             				notaHibrida = (1 - taxaRatings)*rui + taxaRatings*notaPreditaSemRound;
             				notaHibrida = Math.round(notaHibrida);
             				sum_maesHibrida5medida += Math.abs(Integer.parseInt(nota) - notaHibrida);
@@ -641,6 +645,11 @@ public class Hibrido2 {
             				if(rui == 0){
             					taxaRatings = 1;
             				}
+            				
+            				if(notaPreditaSemRound == 0){
+            					taxaRatings = 0;
+            				}
+            				
             				notaHibrida = (1 - taxaRatings)*rui + taxaRatings*notaPreditaSemRound;
             				notaHibrida = Math.round(notaHibrida);
             				sum_maesHibrida6medida += Math.abs(Integer.parseInt(nota) - notaHibrida);
@@ -680,6 +689,7 @@ public class Hibrido2 {
             				
                         	//fazer pra outras medidas de esparsidade (artigo)
             				//aumentar a profundidade do moletrust
+                        	}
             				
             				
                         }
